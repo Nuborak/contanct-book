@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+// import Header from "./Components/Header/Header";
+import "./App.css";
+import AddContact from "./Components/AddContact/AddContact";
+import { useState } from "react";
+import Edit from "./Components/Edit/Edit";
+import axios from "axios";
 
 function App() {
+  const API = "http://localhost:8000";
+  const [name, setName] = useState([]);
+  async function AddContact(newContact) {
+    await axios.post(API, newContact);
+    getContanct();
+  }
+  async function getContanct() {
+    let res = await axios(API);
+    setName(res.data);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/add" element={<AddContact AddContact={AddContact} />} />
+          <Route path="/edit/:id" element={<Edit />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
